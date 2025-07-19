@@ -86,7 +86,7 @@ services:
       - my_network
 
   user-service:
-    image: jeffri1997/user-service:qa
+    image: jeffri1997/user-service:latest
     container_name: user-service
     ports:
       - "4000:4000"

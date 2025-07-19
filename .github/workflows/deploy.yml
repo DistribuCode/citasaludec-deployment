@@ -39,7 +39,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           source: "deployment/docker-compose.yml"
-          target: "~/deploy/docker-compose.yml"  # ✅ Copia explícitamente como archivo
+          target: "~/deploy"
 
       - name: 🧐 Check docker-compose.yml on EC2
         uses: appleboy/ssh-action@v1.0.3

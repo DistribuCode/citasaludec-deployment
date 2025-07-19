@@ -37,7 +37,19 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           source: "deployment/docker-compose.yml"
-          target: "~/deploy"
+          target: "~/deploy/docker-compose.yml"
+
+      - name: 👀 Verify file exists on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            echo "📁 Contents of ~/deploy:"
+            ls -l ~/deploy
+            echo "📄 docker-compose.yml content:"
+            cat ~/deploy/docker-compose.yml || echo "❌ File not found!"
 
       - name: 🚀 Install Docker and Compose + Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3

@@ -23,5 +23,6 @@ jobs:
       - name: 🛠️ Build and Push images defined in docker-compose.yml
         uses: docker/bake-action@v4
         with:
-          files: deployment/docker-compose.yml
+          files: ./deployment/docker-compose.yml
+
           push: true

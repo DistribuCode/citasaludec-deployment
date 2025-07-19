@@ -22,26 +22,26 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: 🧹 Clean previous file or folder on EC2
+      - name: 🧹 Clean previous file on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           script: |
-            rm -rf ~/deploy/docker-compose.yml
+            rm -f ~/deploy/docker-compose.yml
             mkdir -p ~/deploy
 
-      - name: 📂 Copy docker-compose.yml to EC2
+      - name: 📂 Copy docker-compose.yml to EC2 (as file)
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           source: "deployment/docker-compose.yml"
-          target: "~/deploy/"  # ✅ CORREGIDO: usar / para que lo copie como archivo
+          target: "~/deploy/docker-compose.yml"  # 👈 archivo directamente
 
-      - name: 🧐 Verify docker-compose.yml exists in EC2
+      - name: 🧐 Check docker-compose.yml on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -50,10 +50,10 @@ jobs:
           script: |
             echo "✅ Listado de ~/deploy:"
             ls -l ~/deploy
-            echo "✅ Contenido de docker-compose.yml:"
+            echo "✅ Contenido del archivo:"
             cat ~/deploy/docker-compose.yml || echo "❌ No se encuentra el archivo"
 
-      - name: 🚀 Run Docker Compose on EC2
+      - name: 🚀 Run Docker Compose
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}

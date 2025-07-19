@@ -28,7 +28,22 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose version
 
-      - name: 🚀 Deploy with Docker Compose
-        run: |
-          docker-compose -f deployment/docker-compose.yml pull
-          docker-compose -f deployment/docker-compose.yml up -d
+      - name: 📂 Deploy docker-compose to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          source: "deployment/docker-compose.yml"
+          target: "~/deploy"
+
+      - name: 🚀 Run Docker Compose on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/deploy
+            docker-compose pull
+            docker-compose up -d

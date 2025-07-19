@@ -28,7 +28,7 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose version
 
-      - name: 🧹 Clean old docker-compose.yml directory if exists
+      - name: 🧹 Clean old docker-compose.yml (if any)
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -37,7 +37,7 @@ jobs:
           script: |
             rm -rf ~/deploy/docker-compose.yml
 
-      - name: 📂 Deploy docker-compose to EC2
+      - name: 📂 Deploy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -46,17 +46,17 @@ jobs:
           source: "deployment/docker-compose.yml"
           target: "~/deploy/"
 
-      - name: 🧐 Check docker-compose.yml in EC2
+      - name: 🧐 Verify docker-compose.yml in EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           script: |
-            echo "📂 Contenido de ~/deploy:"
+            echo "📂 Archivos en ~/deploy:"
             ls -la ~/deploy
             echo "📄 Contenido de docker-compose.yml:"
-            cat ~/deploy/docker-compose.yml || echo "Archivo no encontrado o vacío"
+            cat ~/deploy/docker-compose.yml || echo "⚠️ Archivo no encontrado o vacío"
 
       - name: 🚀 Run Docker Compose on EC2
         uses: appleboy/ssh-action@v1.0.3

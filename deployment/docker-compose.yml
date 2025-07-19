@@ -186,7 +186,7 @@ services:
       - my_network
 
   logs-service:
-    image: jeffri1997/logs-service:qa
+    image: jeffri1997/logs-service:latest
     container_name: logs-service
     ports:
       - "5005:4011"

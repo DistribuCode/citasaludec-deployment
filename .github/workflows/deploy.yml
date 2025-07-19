@@ -61,14 +61,15 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           script: |
-            echo "🔧 Installing Docker Compose v2.24.6..."
-            sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-            docker-compose version
+            echo "🔧 Installing Docker Compose v2.24.6 as Docker CLI plugin..."
+            sudo mkdir -p /usr/libexec/docker/cli-plugins
+            sudo curl -SL https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-$(uname -s)-$(uname -m) -o /usr/libexec/docker/cli-plugins/docker-compose
+            sudo chmod +x /usr/libexec/docker/cli-plugins/docker-compose
+            docker compose version
 
             echo "🚀 Deploying services..."
             cd ~/deploy
             ls -l
             cat docker-compose.yml
-            docker-compose pull
-            docker-compose up -d
+            docker compose pull
+            docker compose up -d

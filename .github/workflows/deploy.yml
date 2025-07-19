@@ -22,41 +22,36 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: 📥 Install Docker Compose (local, optional)
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose version
-
-      - name: 🧹 Clean old docker-compose.yml (if any)
+      - name: 🧹 Clean previous file on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           script: |
-            rm -rf ~/deploy/docker-compose.yml
+            rm -f ~/deploy/docker-compose.yml
+            mkdir -p ~/deploy
 
-      - name: 📂 Deploy docker-compose.yml to EC2
+      - name: 📂 Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           source: "deployment/docker-compose.yml"
-          target: "~/deploy/"
+          target: "~/deploy/docker-compose.yml"
 
-      - name: 🧐 Verify docker-compose.yml in EC2
+      - name: 🧐 Verify docker-compose.yml exists in EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           script: |
-            echo "📂 Archivos en ~/deploy:"
-            ls -la ~/deploy
-            echo "📄 Contenido de docker-compose.yml:"
-            cat ~/deploy/docker-compose.yml || echo "⚠️ Archivo no encontrado o vacío"
+            echo "✅ Listado de ~/deploy:"
+            ls -l ~/deploy
+            echo "✅ Contenido de docker-compose.yml:"
+            cat ~/deploy/docker-compose.yml || echo "❌ No se encuentra el archivo"
 
       - name: 🚀 Run Docker Compose on EC2
         uses: appleboy/ssh-action@v1.0.3

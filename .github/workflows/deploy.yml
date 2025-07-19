@@ -22,14 +22,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: 🧹 Clean previous file on EC2
+      - name: 🧹 Clean previous file or folder on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           script: |
-            rm -f ~/deploy/docker-compose.yml
+            rm -rf ~/deploy/docker-compose.yml
             mkdir -p ~/deploy
 
       - name: 📂 Copy docker-compose.yml to EC2
@@ -39,7 +39,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           source: "deployment/docker-compose.yml"
-          target: "~/deploy/"
+          target: "~/deploy/"  # 👈 Correcto: termina con / para que lo copie dentro
 
       - name: 🧐 Verify docker-compose.yml exists in EC2
         uses: appleboy/ssh-action@v1.0.3

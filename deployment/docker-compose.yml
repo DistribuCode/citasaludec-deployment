@@ -252,9 +252,9 @@ volumes:
   appointment_data:
   cancel_appointment_data:
   availability_data:
-  notification_data:
   influx_data:
 
 networks:
   my_network:
     driver: bridge
+

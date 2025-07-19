@@ -24,7 +24,7 @@ services:
       - my_network
 
   auth-service:
-    image: jeffri1997/auth-service:latest
+    image: jeffri1997/auth-service:qa
     container_name: auth-service
     ports:
       - "3001:3001"
@@ -57,7 +57,7 @@ services:
       - my_network
 
   user-registration:
-    image: jeffri1997/user-registration:latest
+    image: jeffri1997/user-registration:qa
     container_name: user-registration
     ports:
       - "4001:4001"
@@ -86,7 +86,7 @@ services:
       - my_network
 
   user-service:
-    image: jeffri1997/user-service:latest
+    image: jeffri1997/user-service:qa
     container_name: user-service
     ports:
       - "4000:4000"
@@ -113,7 +113,7 @@ services:
       - my_network
 
   appointment-service:
-    image: jeffri1997/appointment-service:latest
+    image: jeffri1997/appointment-service:qa
     container_name: appointment-service
     ports:
       - "4007:4007"
@@ -145,7 +145,7 @@ services:
       - my_network
 
   cancel-appointment-service:
-    image: jeffri1997/cancel-appointment-serv:latest
+    image: jeffri1997/cancel-appointment-serv:qa
     container_name: cancel-appointment-service
     ports:
       - "4008:4008"
@@ -172,7 +172,7 @@ services:
       - my_network
 
   availability-service:
-    image: jeffri1997/availability-service:latest
+    image: jeffri1997/availability-service:qa
     container_name: availability-service
     ports:
       - "4010:4010"
@@ -186,7 +186,7 @@ services:
       - my_network
 
   logs-service:
-    image: jeffri1997/logs-service:latest
+    image: jeffri1997/logs-service:qa
     container_name: logs-service
     ports:
       - "5005:4011"
@@ -257,4 +257,3 @@ volumes:
 networks:
   my_network:
     driver: bridge
-

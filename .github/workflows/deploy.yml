@@ -29,8 +29,8 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           script: |
-            rm -rf ~/deploy/docker-compose.yml
-            mkdir -p ~/deploy
+            rm -rf ~/deploy              # 🔥 Elimina todo para evitar conflictos
+            mkdir -p ~/deploy            # 🆕 Crea la carpeta limpia
 
       - name: 📂 Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.4
@@ -39,7 +39,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           source: "deployment/docker-compose.yml"
-          target: "~/deploy/"  # 👈 Correcto: termina con / para que lo copie dentro
+          target: "~/deploy/docker-compose.yml"  # ✅ Copia como archivo
 
       - name: 🧐 Verify docker-compose.yml exists in EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -48,9 +48,9 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
           script: |
-            echo "✅ Listado de ~/deploy:"
+            echo "✅ Contenido de ~/deploy:"
             ls -l ~/deploy
-            echo "✅ Contenido de docker-compose.yml:"
+            echo "📄 docker-compose.yml:"
             cat ~/deploy/docker-compose.yml || echo "❌ No se encuentra el archivo"
 
       - name: 🚀 Run Docker Compose on EC2

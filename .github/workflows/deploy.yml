@@ -13,11 +13,14 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: 🗂 List files after checkout (debug)
+      - name: ⛔ DEBUG: Show root files before SCP
         run: |
+          echo "Current Directory: $(pwd)"
           ls -l
-          ls -l deployment/
-          cat deployment/docker-compose.yml || echo "docker-compose.yml not found"
+          echo "== Try to show docker-compose.yml in root =="
+          cat docker-compose.yml || echo "NO docker-compose.yml in root"
+          echo "== Try to show deployment/docker-compose.yml =="
+          cat deployment/docker-compose.yml || echo "NO docker-compose.yml in deployment/"
 
       - name: 🔐 Log in to Docker Hub
         uses: docker/login-action@v2
@@ -42,7 +45,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
-          source: "./docker-compose.yml"
+          source: "docker-compose.yml"    # <--- SOLO SI ESTÁ EN LA RAÍZ
           target: "~/deploy"
 
       - name: 🗂 List files on EC2 after SCP (debug)
@@ -84,4 +87,4 @@ jobs:
               exit 1
             fi
             docker compose -f docker-compose.yml pull
-            docker compose -f docker-compose.yml up -d
+            docker compose -f docker-compose.yml up -d

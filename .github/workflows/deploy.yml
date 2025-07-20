@@ -45,7 +45,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_KEY }}
-          source: "docker-compose.yml"
+          source: "deployment/docker-compose.yml"
           target: "~/deploy"
 
       - name: 🗂 List files on EC2 after SCP (debug)
@@ -87,4 +87,7 @@ jobs:
               exit 1
             fi
             docker compose -f docker-compose.yml pull
-            docker compose -f docker-compose.yml up -d
+            docker compose -f docker-compose.yml up -d
+
+            echo "✅ Deployment completed. Listing running containers:"
+            docker ps

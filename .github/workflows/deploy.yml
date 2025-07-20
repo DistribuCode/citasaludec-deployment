@@ -13,6 +13,12 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
 
+      - name: 🗂 List files after checkout (debug)
+        run: |
+          ls -l
+          ls -l deployment/
+          cat deployment/docker-compose.yml || echo "docker-compose.yml not found"
+
       - name: 🔐 Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -39,6 +45,16 @@ jobs:
           source: "deployment/docker-compose.yml"
           target: "~/deploy"
 
+      - name: 🗂 List files on EC2 after SCP (debug)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            ls -l ~/deploy
+            cat ~/deploy/docker-compose.yml || echo "docker-compose.yml not found in ~/deploy"
+
       - name: 🚀 Install Docker and Compose + Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -63,6 +79,9 @@ jobs:
             echo "🚀 Deploying services with docker compose..."
             cd ~/deploy
             ls -l
-            cat docker-compose.yml
+            if [ ! -f docker-compose.yml ]; then
+              echo "❌ docker-compose.yml NOT FOUND"
+              exit 1
+            fi
             docker compose -f docker-compose.yml pull
             docker compose -f docker-compose.yml up -d
